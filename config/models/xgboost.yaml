@@ -1,0 +1,22 @@
+n_splits: 10
+params:
+  eta: 0.023839252347297356
+  reg_alpha: 6.99554614267605e-06
+  reg_lambda: 0.010419988953061583
+  max_depth: 15
+  max_leaves: 159
+  colsample_bytree: 0.4515469593932409
+  subsample: 0.7732694309118915
+  min_child_weight: 5
+  gamma: 0.6847131315687576
+  seed: 42
+  tree_method: gpu_hist
+  objective: mae
+  eval_metric: mae
+  num_class: 3
+path: res/models/
+working: xgboost
+name: 10fold_xgboost
+early_stopping_rounds: 100
+num_boost_round: 10000
+verbose_eval: 500

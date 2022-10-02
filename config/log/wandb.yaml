@@ -1,0 +1,4 @@
+project: jeju-road-traffic-prediction
+entity: ds-wook
+name: lightgbm_baseline_1
+experiment: True
