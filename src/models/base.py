@@ -15,7 +15,7 @@ import xgboost as xgb
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
 from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import KFold
 
 warnings.filterwarnings("ignore")
 
@@ -61,7 +61,7 @@ class BaseModel(metaclass=ABCMeta):
         models = dict()
         scores = dict()
 
-        kfold = StratifiedKFold(
+        kfold = KFold(
             n_splits=self.config.models.n_splits,
             random_state=self.config.data.seed,
             shuffle=True,
