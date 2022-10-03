@@ -120,8 +120,6 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         dataframe
     """
-    df["group_node"] = df["start_node_name"] + "_" + df["end_node_name"]
-    df["group_node"] = df["group_node"].astype("category")
     # add haversine distance
     df["distance"] = haversine_array(
         df["start_latitude"],

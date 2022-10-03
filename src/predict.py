@@ -10,11 +10,6 @@ from omegaconf import DictConfig
 from data.dataset import load_test_dataset
 from models.infer import inference, load_model
 
-today = str(date.today())
-
-if not (os.path.isdir(today)):
-    os.makedirs(os.path.join(today))
-
 
 @hydra.main(config_path="../config/", config_name="predict", version_base="1.2.0")
 def _main(cfg: DictConfig):
@@ -26,9 +21,10 @@ def _main(cfg: DictConfig):
     test_x = load_test_dataset(cfg)
     preds = inference(results, test_x)
 
-    submit = pd.read_csv(path / cfg.output.submit)
+    submit = pd.read_csv(Path(get_original_cwd()) / cfg.data.path / cfg.output.submit)
     submit["prediction"] = preds
 
+    # save
     today = str(date.today())
     if not (os.path.isdir(today)):
         os.makedirs(os.path.join(today))
