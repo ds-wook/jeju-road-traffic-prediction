@@ -6,7 +6,7 @@ import wandb.catboost as wandb_cb
 import wandb.lightgbm as wandb_lgb
 import wandb.xgboost as wandb_xgb
 import xgboost as xgb
-from catboost import CatBoostClassifier, Pool
+from catboost import CatBoostRegressor, Pool
 from omegaconf import DictConfig
 
 from models.base import BaseModel
@@ -16,7 +16,7 @@ class LightGBMTrainer(BaseModel):
     def __init__(self, config: DictConfig) -> NoReturn:
         super().__init__(config)
 
-    def fit(
+    def _train(
         self,
         x_train: pd.DataFrame,
         y_train: pd.Series,
@@ -45,20 +45,24 @@ class CatBoostTrainer(BaseModel):
     def __init__(self, config: DictConfig) -> NoReturn:
         super().__init__(config)
 
-    def fit(
+    def _train(
         self,
         x_train: pd.DataFrame,
         y_train: pd.Series,
         x_valid: pd.DataFrame,
         y_valid: pd.Series,
-    ) -> CatBoostClassifier:
+    ) -> CatBoostRegressor:
 
-        train_set = Pool(x_train, y_train, cat_features=self.config.models.cat_features)
-        valid_set = Pool(x_valid, y_valid, cat_features=self.config.models.cat_features)
+        train_set = Pool(
+            x_train, y_train, cat_features=self.config.features.cat_features
+        )
+        valid_set = Pool(
+            x_valid, y_valid, cat_features=self.config.features.cat_features
+        )
 
-        model = CatBoostClassifier(
+        model = CatBoostRegressor(
             random_state=self.config.models.seed,
-            cat_features=self.config.models.cat_features,
+            cat_features=self.config.features.cat_features,
             task_type=self.config.models.task_type,
             **self.config.models.params,
         )
@@ -79,7 +83,13 @@ class XGBoostTrainer(BaseModel):
     def __init__(self, config: DictConfig) -> NoReturn:
         super().__init__(config)
 
-    def fit(self, x_train, y_train, x_valid, y_valid) -> xgb.Booster:
+    def _train(
+        self,
+        x_train: pd.DataFrame,
+        y_train: pd.Series,
+        x_valid: pd.DataFrame,
+        y_valid: pd.Series,
+    ) -> xgb.Booster:
         dtrain = xgb.DMatrix(x_train, y_train)
         dvalid = xgb.DMatrix(x_valid, y_valid)
         watchlist = [(dtrain, "train"), (dvalid, "eval")]

@@ -131,3 +131,5 @@ dmypy.json
 input/*
 output/*
 res/*
+wandb/*
+catboost_info/*

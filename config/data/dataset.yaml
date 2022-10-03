@@ -1,0 +1,12 @@
+path: input/jeju-road-traffic-prediction/
+encoder: res/data/
+num: 5
+seed: 42
+target: target
+train: train
+test: test
+drop_features:
+- id
+- base_date
+- road_name
+- vehicle_restricted

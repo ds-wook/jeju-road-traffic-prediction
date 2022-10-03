@@ -10,12 +10,13 @@ from typing import Any, Dict, NoReturn, Union
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
-import wandb
 import xgboost as xgb
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import KFold
+
+import wandb
 
 warnings.filterwarnings("ignore")
 
@@ -33,7 +34,7 @@ class BaseModel(metaclass=ABCMeta):
         self.result = None
 
     @abstractclassmethod
-    def fit(
+    def _train(
         self,
         X_train: pd.DataFrame,
         y_train: pd.Series,
@@ -57,7 +58,7 @@ class BaseModel(metaclass=ABCMeta):
 
     def train_cross_validation(
         self, train_x: pd.DataFrame, train_y: pd.DataFrame
-    ) -> NoReturn:
+    ) -> ModelResult:
         models = dict()
         scores = dict()
 
@@ -80,39 +81,25 @@ class BaseModel(metaclass=ABCMeta):
                     project=self.config.log.project,
                     name=self.config.log.name + f"_fold_{fold}",
                 )
-
-                model = self.fit(x_train, y_train, x_valid, y_valid)
-                models[f"fold_{fold}"] = model
-
-                oof_preds[valid_idx] = (
-                    model.predict(x_valid)
-                    if isinstance(model, lgb.Booster)
-                    else model.predict(xgb.DMatrix(x_valid))
-                    if isinstance(model, xgb.Booster)
-                    else model.predict_proba(x_valid)
-                )
-
-                del x_train, y_train, x_valid, y_valid, model
-                gc.collect()
-
+                model = self._train(x_train, y_train, x_valid, y_valid)
                 wandb.finish()
 
             else:
-                model = self.fit(x_train, y_train, x_valid, y_valid)
-                models[f"fold_{fold}"] = model
+                model = self._train(x_train, y_train, x_valid, y_valid)
 
-                oof_preds[valid_idx] = (
-                    model.predict(x_valid)
-                    if isinstance(model, lgb.Booster)
-                    else model.predict(xgb.DMatrix(x_valid))
-                    if isinstance(model, xgb.Booster)
-                    else model.predict_proba(x_valid)
-                )
-                del x_train, y_train, x_valid, y_valid, model
-                gc.collect()
+            oof_preds[valid_idx] = (
+                model.predict(xgb.DMatrix(x_valid))
+                if isinstance(model, xgb.Booster)
+                else model.predict(x_valid)
+            )
 
-            score = mean_absolute_error(train_y, oof_preds[valid_idx])
+            score = mean_absolute_error(y_valid, oof_preds[valid_idx])
+            logging.info(f"Fold {fold} score: {score:.4f}")
+            models[f"fold_{fold}"] = model
             scores[f"fold_{fold}"] = score
+
+            del x_train, y_train, x_valid, y_valid, model
+            gc.collect()
 
         oof_score = mean_absolute_error(train_y, oof_preds)
         logging.info(f"OOF Score: {oof_score}")

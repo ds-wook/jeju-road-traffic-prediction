@@ -1,0 +1,16 @@
+hydra:
+  run:
+    dir: log/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  output_subdir: null
+
+defaults:
+  - data: dataset
+  - features: engineering
+  - log: wandb
+  - models: lightgbm
+
+output:
+  path: output
+  name: 5fold_lightgbm_seed42.csv
+  submit: sample_submission.csv
+  features: features.yaml

@@ -1,0 +1,7 @@
+cat_features:
+- day_of_week
+- start_turn_restricted
+- end_turn_restricted
+- start_node_name
+- end_node_name
+- group_node

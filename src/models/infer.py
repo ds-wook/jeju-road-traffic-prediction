@@ -1,7 +1,6 @@
 import pickle
 from pathlib import Path
 
-import lightgbm as lgb
 import numpy as np
 import pandas as pd
 import xgboost as xgb
@@ -20,7 +19,7 @@ def load_model(config: DictConfig, model_name: str) -> ModelResult:
     Returns:
         ModelResult object
     """
-    model_path = Path(get_original_cwd()) / config.model.path / model_name
+    model_path = Path(get_original_cwd()) / config.models.path / model_name
 
     with open(model_path, "rb") as output:
         model_result = pickle.load(output)
@@ -43,9 +42,7 @@ def inference(result: ModelResult, test_x: pd.DataFrame) -> np.ndarray:
 
     for model in tqdm(result.models.values(), total=folds):
         preds += (
-            model.predict(test_x) / folds
-            if isinstance(model, lgb.Booster)
-            else model.predict(xgb.DMatrix(test_x)) / folds
+            model.predict(xgb.DMatrix(test_x)) / folds
             if isinstance(model, xgb.Booster)
             else model.predict(test_x) / folds
         )

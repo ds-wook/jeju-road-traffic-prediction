@@ -1,18 +1,14 @@
-cat_features:
-...
-task_type: CPU
+task_type: GPU
 params:
-  learning_rate: 0.026612467217016746
-  l2_leaf_reg: 0.3753065117824262
-  max_depth: 8
-  bagging_temperature: 1
-  min_data_in_leaf: 57
-  max_bin: 494
-  eval_metric: MAE
-  loss_function: MAE
-  od_type: Iter
-  od_wait: 500
   iterations: 10000
+  depth: 6
+  learning_rate: 0.025
+  thread_count: -1
+  l2_leaf_reg: 10
+  loss_function: MAE
+  boosting_type: Plain
+  eval_metric: MAE
+  posterior_sampling: False
 path: res/models/
 working: catboost
 name: 5fold_catboost
@@ -21,3 +17,4 @@ early_stopping_rounds: 100
 search: False
 seed: 42
 verbose_eval: 500
+result: 5fold_catboost_seed42.pkl
