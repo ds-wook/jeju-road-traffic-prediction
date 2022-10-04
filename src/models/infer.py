@@ -19,7 +19,12 @@ def load_model(config: DictConfig, model_name: str) -> ModelResult:
     Returns:
         ModelResult object
     """
-    model_path = Path(get_original_cwd()) / config.models.path / model_name
+    model_path = (
+        Path(get_original_cwd())
+        / config.models.path
+        / config.models.working
+        / model_name
+    )
 
     with open(model_path, "rb") as output:
         model_result = pickle.load(output)

@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, NoReturn, Union
 
-import lightgbm as lgb
 import numpy as np
 import pandas as pd
 import xgboost as xgb
@@ -50,6 +49,7 @@ class BaseModel(metaclass=ABCMeta):
         model_path = (
             Path(get_original_cwd())
             / self.config.models.path
+            / self.config.models.working
             / self.config.models.result
         )
 

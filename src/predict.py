@@ -1,4 +1,3 @@
-import os
 from datetime import date
 from pathlib import Path
 
@@ -13,8 +12,6 @@ from models.infer import inference, load_model
 
 @hydra.main(config_path="../config/", config_name="predict", version_base="1.2.0")
 def _main(cfg: DictConfig):
-    path = Path(get_original_cwd()) / cfg.output.path
-
     # model load
     results = load_model(cfg, cfg.models.result)
 
@@ -22,16 +19,18 @@ def _main(cfg: DictConfig):
     preds = inference(results, test_x)
 
     submit = pd.read_csv(Path(get_original_cwd()) / cfg.data.path / cfg.output.submit)
-    submit["prediction"] = preds
+    submit[cfg.data.target] = preds
 
     # save
     today = str(date.today())
-    if not (os.path.isdir(today)):
-        os.makedirs(os.path.join(today))
-        submit.to_csv(path / today / cfg.output.name, index=False)
+    path = Path(get_original_cwd()) / cfg.output.path / today
+
+    if not (path.is_dir()):
+        path.mkdir(parents=True)
+        submit.to_csv(path / cfg.output.name, index=False)
 
     else:
-        submit.to_csv(path / today / cfg.output.name, index=False)
+        submit.to_csv(path / cfg.output.name, index=False)
 
 
 if __name__ == "__main__":

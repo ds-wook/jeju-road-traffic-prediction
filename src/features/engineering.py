@@ -70,12 +70,15 @@ def haversine_array(
     return h
 
 
-def change_te_train(df: pd.DataFrame, config: DictConfig) -> pd.DataFrame:
+def change_target_encoding(
+    df: pd.DataFrame, config: DictConfig, is_train=True
+) -> pd.DataFrame:
     """
     Change target encoding
     Args:
         df: dataframe
         config: config
+        is_train: is train
     Returns:
         dataframe
     """
@@ -83,31 +86,18 @@ def change_te_train(df: pd.DataFrame, config: DictConfig) -> pd.DataFrame:
 
     df["group_node"] = df["start_node_name"] + "_" + df["end_node_name"]
     df["group_node"] = df["group_node"].astype("category")
-    target_encoder = TargetEncoder(cols=["group_node"])
-    target_encoder.fit(df["group_node"], df["target"])
-    df["group_node"] = target_encoder.transform(df["group_node"])
 
-    with open(path / "group_node.pkl", "wb") as f:
-        pickle.dump(target_encoder, f)
+    if is_train:
+        target_encoder = TargetEncoder(cols=["group_node"])
+        target_encoder.fit(df["group_node"], df["target"])
+        df["group_node"] = target_encoder.transform(df["group_node"])
 
-    return df
+        with open(path / "group_node.pkl", "wb") as f:
+            pickle.dump(target_encoder, f)
 
-
-def change_te_test(df: pd.DataFrame, config: DictConfig) -> pd.DataFrame:
-    """
-    Change target encoding
-    Args:
-        df: dataframe
-        config: config
-    Returns:
-        dataframe
-    """
-    path = Path(get_original_cwd()) / config.data.encoder
-
-    df["group_node"] = df["start_node_name"] + "_" + df["end_node_name"]
-    df["group_node"] = df["group_node"].astype("category")
-    target_encoder = pickle.load(open(path / "group_node.pkl", "rb"))
-    df["group_node"] = target_encoder.transform(df["group_node"])
+    else:
+        target_encoder = pickle.load(open(path / "group_node.pkl", "rb"))
+        df["group_node"] = target_encoder.transform(df["group_node"])
 
     return df
 
@@ -120,6 +110,9 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         dataframe
     """
+    # add group node
+    df["group_node"] = df["start_node_name"] + "_" + df["end_node_name"]
+    df["group_node"] = df["group_node"].astype("category")
     # add haversine distance
     df["distance"] = haversine_array(
         df["start_latitude"],

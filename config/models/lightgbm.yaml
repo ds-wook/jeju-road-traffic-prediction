@@ -1,6 +1,6 @@
 n_splits: 5
 params:
-  objective: mae
+  objective: regression
   metric: mae
   boosting_type: gbdt
   learning_rate: 0.3363649934414201
@@ -16,8 +16,8 @@ params:
   verbose: -1
 path: res/models/
 working: lightgbm
-name: 5fold_lightgbm
+name: 5fold_lightgbm_target
 early_stopping_rounds: 100
 num_boost_round: 10000
 verbose_eval: 500
-result: lightgbm/5fold_lightgbm_seed42.pkl
+result: 5fold_lightgbm_target_seed42.pkl
