@@ -1,9 +1,9 @@
 n_splits: 5
 params:
-  objective: regression
+  objective: huber
   metric: mae
   boosting_type: gbdt
-  learning_rate: 0.3363649934414201
+  learning_rate: 0.5
   num_leaves: 606
   max_depth: 7
   lambda_l2: 0.06506676052501416
@@ -16,8 +16,8 @@ params:
   verbose: -1
 path: res/models/
 working: lightgbm
-name: 5fold_lightgbm_target
+name: 5fold_lightgbm_huber
 early_stopping_rounds: 100
-num_boost_round: 10000
+num_boost_round: 20000
 verbose_eval: 500
-result: 5fold_lightgbm_target_seed42.pkl
+result: 5fold_lightgbm_huber_seed42.pkl

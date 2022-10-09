@@ -4,21 +4,21 @@ import os
 import random
 import time
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, NoReturn
 
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
 
-def seed_everything(seed: int = 42) -> None:
+def seed_everything(seed: int = 42) -> NoReturn:
     random.seed(seed)
     os.environ["PYTHONASHSEED"] = str(seed)
     np.random.seed(seed)
 
 
 @contextmanager
-def timer(name: Any, logger: logging.getLogger) -> None:
+def timer(name: Any, logger: logging.getLogger) -> NoReturn:
     t0 = time.time()
     logging.debug(f"[{name}] start")
     yield
