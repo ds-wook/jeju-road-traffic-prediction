@@ -11,6 +11,8 @@ defaults:
 
 output:
   path: output
-  name: 5fold_catboost_seed42.csv
+  lightgbm: 5fold_lightgbm_cat_seed42.csv
+  catboost: 5fold_catboost_seed42.csv
+  name: median_ensemble.csv
   submit: sample_submission.csv
   features: features.yaml

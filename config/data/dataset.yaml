@@ -10,3 +10,6 @@ drop_features:
 - base_date
 - road_name
 - vehicle_restricted
+- height_restricted
+- start_node_name
+- end_node_name

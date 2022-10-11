@@ -3,6 +3,7 @@ from omegaconf import DictConfig
 
 from data.dataset import load_train_dataset
 from models.boosting import CatBoostTrainer, LightGBMTrainer, XGBoostTrainer
+from models.tabnet import TabNetTrainer
 
 
 @hydra.main(config_path="../config/", config_name="train", version_base="1.2.0")
@@ -24,6 +25,10 @@ def _main(cfg: DictConfig):
         cb_trainer.train_cross_validation(train_x, train_y)
         cb_trainer.save_model()
 
+    elif cfg.models.working == "tabnet":
+        tabnet_trainer = TabNetTrainer(config=cfg)
+        tabnet_trainer.train_cross_validation(train_x, train_y)
+        tabnet_trainer.save_model()
     else:
         raise NotImplementedError
 

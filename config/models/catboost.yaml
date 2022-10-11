@@ -1,15 +1,18 @@
 cat_features:
 - day_of_week
+- base_hour
+- road_rating
 - start_turn_restricted
 - end_turn_restricted
-- start_node_name
-- end_node_name
+- connect_code
+- maximum_speed_limit
+- weight_restricted
+- road_type
 - group_node
-task_type: CPU
+task_type: GPU
 params:
-  iterations: 10000
-  depth: 6
-  learning_rate: 0.3
+  iterations: 20000
+  learning_rate: 0.4
   thread_count: -1
   l2_leaf_reg: 10
   loss_function: MAE
@@ -22,5 +25,5 @@ n_splits: 5
 early_stopping_rounds: 100
 search: False
 seed: 42
-verbose_eval: 500
+verbose_eval: 100
 result: 5fold_catboost_seed42.pkl

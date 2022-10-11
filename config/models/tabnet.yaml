@@ -1,0 +1,20 @@
+n_splits: 5
+params:
+  n_d: 256
+  n_a: 256
+  n_steps: 5
+  gamma: 1.5
+  n_independent: 2
+  n_shared: 2
+  lambda_sparse: 1e-5
+  mask_type: sparsemax
+  seed: 42
+  verbose: 5
+path: res/models/
+working: tabnet
+name: 5fold_tabnet
+max_epochs: 200
+batch_size: 1024
+virtual_batch_size: 256
+early_stopping_rounds: 100
+result: 5fold_tabnet_seed42.pkl
