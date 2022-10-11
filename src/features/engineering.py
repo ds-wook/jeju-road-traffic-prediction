@@ -1,10 +1,12 @@
 import pickle
 from pathlib import Path
-from category_encoders.target_encoder import TargetEncoder
+
 import numpy as np
 import pandas as pd
+from category_encoders.target_encoder import TargetEncoder
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
+from sklearn.cluster import KMeans
 from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 
@@ -98,6 +100,25 @@ def change_target_encoding(
     else:
         target_encoder = pickle.load(open(path / "group_node.pkl", "rb"))
         df["group_node"] = target_encoder.transform(df["group_node"])
+
+    return df
+
+
+def add_cluster_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add kmeans features
+    Args:
+        df: dataframe
+    Returns:
+        dataframe
+    """
+    kmeans = KMeans(n_clusters=32, random_state=42)
+    kmeans.fit(df[["start_latitude", "start_longitude"]])
+    df["start_cluster"] = kmeans.predict(df[["start_latitude", "start_longitude"]])
+
+    kmeans = KMeans(n_clusters=32, random_state=42)
+    kmeans.fit(df[["end_latitude", "end_longitude"]])
+    df["end_cluster"] = kmeans.predict(df[["end_latitude", "end_longitude"]])
 
     return df
 

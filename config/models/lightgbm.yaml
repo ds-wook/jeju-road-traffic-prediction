@@ -1,14 +1,3 @@
-cat_features:
-- day_of_week
-- base_hour
-- road_rating
-- start_turn_restricted
-- end_turn_restricted
-- connect_code
-- maximum_speed_limit
-- weight_restricted
-- road_type
-- group_node
 n_splits: 5
 params:
   objective: mae
@@ -27,8 +16,8 @@ params:
   verbose: -1
 path: res/models/
 working: lightgbm
-name: 5fold_lightgbm_cat
+name: 5fold_lightgbm_kmeans
 early_stopping_rounds: 100
 num_boost_round: 20000
 verbose_eval: 500
-result: 5fold_lightgbm_cat_seed42.pkl
+result: 5fold_lightgbm_kmeans_seed42.pkl

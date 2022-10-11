@@ -8,6 +8,7 @@ from omegaconf import DictConfig
 from features.engineering import (
     create_categorical_test,
     create_categorical_train,
+    add_cluster_features,
     add_features,
 )
 
@@ -22,6 +23,7 @@ def load_train_dataset(config: DictConfig) -> Tuple[pd.DataFrame]:
     """
     path = Path(get_original_cwd()) / config.data.path
     train = pd.read_parquet(path / f"{config.data.train}.parquet")
+    train = add_cluster_features(train)
     train = add_features(train)
     train = create_categorical_train(train, config)
     train_x = train.drop(columns=[*config.data.drop_features] + [config.data.target])
@@ -39,6 +41,7 @@ def load_test_dataset(config: DictConfig) -> pd.DataFrame:
     """
     path = Path(get_original_cwd()) / config.data.path
     test = pd.read_parquet(path / f"{config.data.test}.parquet")
+    test = add_cluster_features(test)
     test = add_features(test)
     test = create_categorical_test(test, config)
     test_x = test.drop(columns=[*config.data.drop_features])

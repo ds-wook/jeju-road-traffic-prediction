@@ -8,7 +8,8 @@ train = pd.read_parquet("../input/jeju-road-traffic-prediction/train.parquet")
 test = pd.read_parquet("../input/jeju-road-traffic-prediction/test.parquet")
 
 # %%
+train.head()
+# %%
 train["maximum_speed_limit"].head()
 # %%
 train["height_restricted"].max()
-# %%

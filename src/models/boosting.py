@@ -24,10 +24,10 @@ class LightGBMTrainer(BaseModel):
         y_valid: pd.Series,
     ) -> lgb.Booster:
         train_set = lgb.Dataset(
-            x_train, y_train, categorical_feature=self.config.models.cat_features
+            x_train, y_train, categorical_feature=self.config.features.cat_features
         )
         valid_set = lgb.Dataset(
-            x_valid, y_valid, categorical_feature=self.config.models.cat_features
+            x_valid, y_valid, categorical_feature=self.config.features.cat_features
         )
 
         model = lgb.train(
@@ -58,10 +58,10 @@ class CatBoostTrainer(BaseModel):
     ) -> CatBoostRegressor:
 
         train_set = Pool(
-            x_train, y_train, cat_features=self.config.models.cat_features
+            x_train, y_train, cat_features=self.config.features.cat_features
         )
         valid_set = Pool(
-            x_valid, y_valid, cat_features=self.config.models.cat_features
+            x_valid, y_valid, cat_features=self.config.features.cat_features
         )
 
         model = CatBoostRegressor(
