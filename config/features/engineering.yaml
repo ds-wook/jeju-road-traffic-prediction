@@ -1,11 +1,15 @@
 cat_features:
 - day_of_week
-- base_hour
-- road_rating
 - start_turn_restricted
 - end_turn_restricted
+- group_node_name
+- start_node_name
+- end_node_name
+- base_hour
+- road_rating
 - connect_code
 - maximum_speed_limit
 - weight_restricted
 - road_type
-- group_node
+- start_cluster
+- end_cluster

@@ -3,7 +3,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from category_encoders.target_encoder import TargetEncoder
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
 from sklearn.cluster import KMeans
@@ -26,7 +25,7 @@ def create_categorical_train(train: pd.DataFrame, config: DictConfig) -> pd.Data
 
     le_encoder = LabelEncoder()
 
-    for cat_feature in tqdm(config.features.cat_features):
+    for cat_feature in tqdm(config.data.cat_features):
         train[cat_feature] = le_encoder.fit_transform(train[cat_feature])
         with open(path / f"{cat_feature}.pkl", "wb") as f:
             pickle.dump(le_encoder, f)
@@ -45,7 +44,7 @@ def create_categorical_test(test: pd.DataFrame, config: DictConfig) -> pd.DataFr
     """
     path = Path(get_original_cwd()) / config.data.encoder
 
-    for cat_feature in tqdm(config.features.cat_features):
+    for cat_feature in tqdm(config.data.cat_features):
         le_encoder = pickle.load(open(path / f"{cat_feature}.pkl", "rb"))
         for label in np.unique(test[cat_feature]):
             if label not in le_encoder.classes_:
@@ -70,38 +69,6 @@ def haversine_array(
     )
     h = 2 * avg_earth_radius * np.arcsin(np.sqrt(d))
     return h
-
-
-def change_target_encoding(
-    df: pd.DataFrame, config: DictConfig, is_train=True
-) -> pd.DataFrame:
-    """
-    Change target encoding
-    Args:
-        df: dataframe
-        config: config
-        is_train: is train
-    Returns:
-        dataframe
-    """
-    path = Path(get_original_cwd()) / config.data.encoder
-
-    df["group_node"] = df["start_node_name"] + "_" + df["end_node_name"]
-    df["group_node"] = df["group_node"].astype("category")
-
-    if is_train:
-        target_encoder = TargetEncoder(cols=["group_node"])
-        target_encoder.fit(df["group_node"], df["target"])
-        df["group_node"] = target_encoder.transform(df["group_node"])
-
-        with open(path / "group_node.pkl", "wb") as f:
-            pickle.dump(target_encoder, f)
-
-    else:
-        target_encoder = pickle.load(open(path / "group_node.pkl", "rb"))
-        df["group_node"] = target_encoder.transform(df["group_node"])
-
-    return df
 
 
 def add_cluster_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -131,9 +98,22 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         dataframe
     """
+    count_features = [
+        "base_hour",
+        "road_rating",
+        "connect_code",
+        "maximum_speed_limit",
+        "weight_restricted",
+        "road_type",
+        "start_cluster",
+        "end_cluster",
+    ]
+    for feature in count_features:
+        df[feature] = df[feature].astype(int)
     # add group node
-    df["group_node"] = df["start_node_name"] + "_" + df["end_node_name"]
-    df["group_node"] = df["group_node"].astype("category")
+    df["group_node_name"] = df["start_node_name"] + "_" + df["end_node_name"]
+    df["group_node_name"] = df["group_node_name"].astype("category")
+
     # add haversine distance
     df["distance"] = haversine_array(
         df["start_latitude"],
