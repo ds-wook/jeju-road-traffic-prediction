@@ -5,10 +5,10 @@ seed: 42
 target: target
 train: train
 test: test
+is_train: True
 drop_features:
 - id
 - base_date
-- road_name
 - road_in_use
 - vehicle_restricted
 - height_restricted
@@ -19,3 +19,4 @@ cat_features:
 - group_node_name
 - start_node_name
 - end_node_name
+- road_name

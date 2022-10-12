@@ -71,7 +71,7 @@ def haversine_array(
     return h
 
 
-def add_cluster_features(df: pd.DataFrame) -> pd.DataFrame:
+def add_cluster_features(df: pd.DataFrame, config: DictConfig) -> pd.DataFrame:
     """
     Add kmeans features
     Args:
@@ -79,13 +79,27 @@ def add_cluster_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         dataframe
     """
-    kmeans = KMeans(n_clusters=10, random_state=42)
-    kmeans.fit(df[["start_latitude", "start_longitude"]])
-    df["start_cluster"] = kmeans.predict(df[["start_latitude", "start_longitude"]])
+    path = Path(get_original_cwd()) / config.data.encoder
 
-    kmeans = KMeans(n_clusters=10, random_state=42)
-    kmeans.fit(df[["end_latitude", "end_longitude"]])
-    df["end_cluster"] = kmeans.predict(df[["end_latitude", "end_longitude"]])
+    if config.data.is_train:
+        kmeans = KMeans(n_clusters=10, random_state=42)
+        kmeans.fit(df[["start_latitude", "start_longitude"]])
+        df["start_cluster"] = kmeans.predict(df[["start_latitude", "start_longitude"]])
+        with open(path / "start_cluster.pkl", "wb") as f:
+            pickle.dump(kmeans, f)
+
+        kmeans = KMeans(n_clusters=10, random_state=42)
+        kmeans.fit(df[["end_latitude", "end_longitude"]])
+        df["end_cluster"] = kmeans.predict(df[["end_latitude", "end_longitude"]])
+        with open(path / "end_cluster.pkl", "wb") as f:
+            pickle.dump(kmeans, f)
+    else:
+        kmeans = pickle.load(open(path / "start_cluster.pkl", "rb"))
+        kmeans.transform(df[["start_latitude", "start_longitude"]])
+        df["start_cluster"] = kmeans.predict(df[["start_latitude", "start_longitude"]])
+        kmeans = pickle.load(open(path / "end_cluster.pkl", "rb"))
+        kmeans.transform(df[["end_latitude", "end_longitude"]])
+        df["end_cluster"] = kmeans.predict(df[["end_latitude", "end_longitude"]])
 
     return df
 
@@ -113,6 +127,11 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     # add group node
     df["group_node_name"] = df["start_node_name"] + "_" + df["end_node_name"]
     df["group_node_name"] = df["group_node_name"].astype("category")
+
+    # is rush hour
+    df["rush_hour"] = df["base_hour"].apply(
+        lambda x: 1 if 8 <= x <= 10 or 18 <= x <= 20 else 0
+    )
 
     # add haversine distance
     df["distance"] = haversine_array(

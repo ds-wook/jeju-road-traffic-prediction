@@ -13,3 +13,5 @@ cat_features:
 - road_type
 - start_cluster
 - end_cluster
+- rush_hour
+- road_name
