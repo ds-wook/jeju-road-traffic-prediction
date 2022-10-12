@@ -26,8 +26,6 @@ def load_train_dataset(config: DictConfig) -> Tuple[pd.DataFrame]:
     train = add_cluster_features(train)
     train = add_features(train)
     train = create_categorical_train(train, config)
-    drop_index = train[train["road_name"] == "-"].index
-    train = train.drop(drop_index)
     train_x = train.drop(columns=[*config.data.drop_features] + [config.data.target])
     train_y = train[config.data.target]
     return train_x, train_y

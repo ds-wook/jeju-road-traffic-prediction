@@ -79,11 +79,11 @@ def add_cluster_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         dataframe
     """
-    kmeans = KMeans(n_clusters=32, random_state=42)
+    kmeans = KMeans(n_clusters=10, random_state=42)
     kmeans.fit(df[["start_latitude", "start_longitude"]])
     df["start_cluster"] = kmeans.predict(df[["start_latitude", "start_longitude"]])
 
-    kmeans = KMeans(n_clusters=32, random_state=42)
+    kmeans = KMeans(n_clusters=10, random_state=42)
     kmeans.fit(df[["end_latitude", "end_longitude"]])
     df["end_cluster"] = kmeans.predict(df[["end_latitude", "end_longitude"]])
 
