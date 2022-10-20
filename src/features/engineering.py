@@ -112,26 +112,13 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         dataframe
     """
-    count_features = [
-        "base_hour",
-        "road_rating",
-        "connect_code",
-        "maximum_speed_limit",
-        "weight_restricted",
-        "road_type",
-        "start_cluster",
-        "end_cluster",
-    ]
-    for feature in count_features:
-        df[feature] = df[feature].astype(int)
-    # add group node
-    df["group_node_name"] = df["start_node_name"] + "_" + df["end_node_name"]
-    df["group_node_name"] = df["group_node_name"].astype("category")
-
     # is rush hour
     df["rush_hour"] = df["base_hour"].apply(
         lambda x: 1 if 8 <= x <= 10 or 18 <= x <= 20 else 0
     )
+    # add group node
+    df["group_node_name"] = df["start_node_name"] + "_" + df["end_node_name"]
+    df["group_node_name"] = df["group_node_name"].astype("category")
 
     # add haversine distance
     df["distance"] = haversine_array(

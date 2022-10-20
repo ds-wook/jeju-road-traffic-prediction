@@ -1,0 +1,2 @@
+python src/train.py models=catboost log.experiment=False models.result=5fold_catboost_kmeans_seed42.pkl
+python src/predict.py output.name=5fold_catboost_kmeans_seed42.csv models=catboost data.is_train=False
