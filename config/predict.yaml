@@ -7,10 +7,10 @@ defaults:
   - data: dataset
   - features: engineering
   - log: wandb
-  - models: lightgbm
+  - models: catboost
 
 output:
   path: output
-  name: 5fold_lightgbm_kmeans_seed42.csv
+  name: 5fold_catboost_selected_seed42.csv
   submit: sample_submission.csv
   features: features.yaml
