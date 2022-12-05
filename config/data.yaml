@@ -1,11 +1,6 @@
-hydra:
-  run:
-    dir: log/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  output_subdir: null
-  job:
-    chdir: True
 defaults:
   - data: dataset
-  - _self_  
+  - _self_
+  - hydra: default
   - override hydra/hydra_logging: disabled  
   - override hydra/job_logging: disabled

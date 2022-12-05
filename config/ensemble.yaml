@@ -1,11 +1,7 @@
-hydra:
-  run:
-    dir: log/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  output_subdir: null
-
 defaults:
   - data: dataset
   - features: engineering
+  - hydra: default
   - log: wandb
   - models: catboost
 

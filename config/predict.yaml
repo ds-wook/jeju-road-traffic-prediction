@@ -1,16 +1,12 @@
-hydra:
-  run:
-    dir: log/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  output_subdir: null
-
 defaults:
   - data: dataset
   - features: engineering
+  - hydra: default
   - log: wandb
-  - models: catboost
+  - models: lightgbm
 
 output:
   path: output
-  name: 5fold_catboost_selected_seed42.csv
+  name: 5fold_lightgbm_kmeans_seed42.csv
   submit: sample_submission.csv
   features: features.yaml

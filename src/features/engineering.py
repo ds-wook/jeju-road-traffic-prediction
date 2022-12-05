@@ -129,3 +129,30 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return df
+
+
+def add_frequency_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add features
+    Args:
+        df: dataframe
+    Returns:
+        dataframe
+    """
+    cat_features = [
+        "group_node_name",
+        "start_node_name",
+        "end_node_name",
+        "road_name",
+        "day_of_week",
+        "base_hour",
+        "road_rating",
+        "start_turn_restricted",
+        "end_turn_restricted",
+    ]
+
+    for cat_feature in tqdm(cat_features):
+        frequency_encoding = df.groupby(cat_feature).size() / len(df)
+        df[f"{cat_feature}_frequency"] = df[cat_feature].map(frequency_encoding)
+
+    return df
