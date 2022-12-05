@@ -1,4 +1,3 @@
-from datetime import date
 from pathlib import Path
 
 import hydra
@@ -23,15 +22,8 @@ def _main(cfg: DictConfig):
     submit[cfg.data.target] = preds
 
     # save
-    today = str(date.today())
-    path = Path(get_original_cwd()) / cfg.output.path / today
-
-    if not (path.is_dir()):
-        path.mkdir(parents=True)
-        submit.to_csv(path / cfg.output.name, index=False)
-
-    else:
-        submit.to_csv(path / cfg.output.name, index=False)
+    path = Path(get_original_cwd()) / cfg.output.path
+    submit.to_csv(path / cfg.output.name, index=False)
 
 
 if __name__ == "__main__":

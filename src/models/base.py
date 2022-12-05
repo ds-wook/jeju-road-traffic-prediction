@@ -9,13 +9,12 @@ from typing import Any, Dict, NoReturn, Union
 
 import numpy as np
 import pandas as pd
+import wandb
 import xgboost as xgb
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import KFold
-
-import wandb
 
 warnings.filterwarnings("ignore")
 

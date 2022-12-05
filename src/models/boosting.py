@@ -23,12 +23,8 @@ class LightGBMTrainer(BaseModel):
         x_valid: pd.DataFrame,
         y_valid: pd.Series,
     ) -> lgb.Booster:
-        train_set = lgb.Dataset(
-            x_train, y_train
-        )
-        valid_set = lgb.Dataset(
-            x_valid, y_valid
-        )
+        train_set = lgb.Dataset(x_train, y_train)
+        valid_set = lgb.Dataset(x_valid, y_valid)
 
         model = lgb.train(
             train_set=train_set,

@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractclassmethod
 from pathlib import Path
 
 import optuna
+import wandb
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf, open_dict
 from optuna.integration.wandb import WeightsAndBiasesCallback
@@ -11,8 +12,6 @@ from optuna.samplers import BaseSampler, CmaEsSampler, RandomSampler, TPESampler
 from optuna.study import Study
 from optuna.trial import FrozenTrial
 from optuna.visualization import plot_optimization_history, plot_param_importances
-
-import wandb
 
 warnings.filterwarnings("ignore")
 
