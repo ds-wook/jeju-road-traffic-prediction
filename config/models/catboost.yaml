@@ -18,6 +18,7 @@ params:
   loss_function: MAE
   eval_metric: MAE
   posterior_sampling: False
+  allow_writing_files: False
 path: res/models/
 working: catboost
 name: 5fold_catboost

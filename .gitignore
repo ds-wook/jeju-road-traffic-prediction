@@ -133,3 +133,5 @@ output/*
 res/*
 wandb/*
 catboost_info/*
+log/*
+!log/.gitkeep

@@ -11,9 +11,8 @@ params:
   gamma: 0.6847131315687576
   seed: 42
   tree_method: gpu_hist
-  objective: mae
+  objective: reg:squarederror
   eval_metric: mae
-  num_class: 3
 path: res/models/
 working: xgboost
 name: 10fold_xgboost
