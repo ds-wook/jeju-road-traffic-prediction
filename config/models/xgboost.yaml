@@ -1,4 +1,4 @@
-n_splits: 10
+n_splits: 5
 params:
   eta: 0.023839252347297356
   reg_alpha: 6.99554614267605e-06

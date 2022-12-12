@@ -21,12 +21,20 @@ class TabNetTrainer(BaseModel):
     ) -> TabNetRegressor:
         x_train, y_train = x_train.values, y_train.values.reshape(-1, 1)
         x_valid, y_valid = x_valid.values, y_valid.values.reshape(-1, 1)
-        params = dict(self.config.models.params)
-        params["cat_idxs"] = []
-        params["cat_dims"] = []
-        params["optimizer_fn"] = torch.optim.Adam
-        params["optimizer_params"] = dict(lr=2e-2, weight_decay=1e-5)
-        model = TabNetRegressor(**params)
+
+        model = TabNetRegressor(
+            optimizer_fn=torch.optim.Adam,
+            optimizer_params=dict(lr=self.config.models.params.lr),
+            scheduler_params={
+                "step_size": self.config.models.params.step_size,
+                "gamma": self.config.models.params.gamma,
+            },
+            scheduler_fn=torch.optim.lr_scheduler.StepLR,
+            mask_type=self.config.models.params.mask_type,
+            n_steps=self.config.models.params.n_steps,
+            n_d=self.config.models.params.n_d,
+            n_a=self.config.models.params.n_a,
+        )
         model.fit(
             x_train,
             y_train,
