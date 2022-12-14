@@ -6,10 +6,12 @@ params:
   gamma: 1.5
   n_independent: 2
   n_shared: 2
+  lr: 0.002
   lambda_sparse: 1e-5
   mask_type: sparsemax
   seed: 42
   verbose: 5
+  step_size: 5
 path: res/models/
 working: tabnet
 name: 5fold_tabnet

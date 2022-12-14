@@ -13,6 +13,7 @@ import wandb
 import xgboost as xgb
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
+from pytorch_tabnet.tab_model import TabNetRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import KFold
 
@@ -78,7 +79,7 @@ class BaseModel(metaclass=ABCMeta):
                 wandb.init(
                     entity=self.config.log.entity,
                     project=self.config.log.project,
-                    name=self.config.log.name + f"_fold_{fold}",
+                    name=self.config.log.name + f"-fold-{fold}",
                 )
                 model = self._train(x_train, y_train, x_valid, y_valid)
                 wandb.finish()
@@ -89,6 +90,8 @@ class BaseModel(metaclass=ABCMeta):
             oof_preds[valid_idx] = (
                 model.predict(xgb.DMatrix(x_valid))
                 if isinstance(model, xgb.Booster)
+                else model.predict(x_valid.values).flatten()
+                if isinstance(model, TabNetRegressor)
                 else model.predict(x_valid)
             )
 

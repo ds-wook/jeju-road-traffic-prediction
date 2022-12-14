@@ -27,4 +27,4 @@ early_stopping_rounds: 100
 search: False
 seed: 42
 verbose_eval: 500
-result: 5fold_catboost_selected_seed42.pkl
+result: 5fold_catboost_kmeans_seed42.pkl

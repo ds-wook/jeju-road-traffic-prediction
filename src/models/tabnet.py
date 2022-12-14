@@ -40,11 +40,11 @@ class TabNetTrainer(BaseModel):
             y_train,
             eval_set=[(x_train, y_train), (x_valid, y_valid)],
             eval_name=["train", "val"],
-            patience=200,
             max_epochs=self.config.models.max_epochs,
             batch_size=self.config.models.batch_size,
             virtual_batch_size=self.config.models.virtual_batch_size,
-            num_workers=0,
+            patience=2,
+            num_workers=1,
             drop_last=False,
             eval_metric=["mae"],
         )

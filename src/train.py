@@ -1,4 +1,8 @@
+import pickle
+from pathlib import Path
+
 import hydra
+from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
 
 from data.dataset import load_train_dataset
@@ -26,9 +30,20 @@ def _main(cfg: DictConfig):
         cb_trainer.save_model()
 
     elif cfg.models.working == "tabnet":
+        with open(
+            Path(get_original_cwd())
+            / cfg.models.path
+            / "lightgbm"
+            / "5fold_lightgbm_seed42.pkl",
+            "rb",
+        ) as output:
+            model_result = pickle.load(output)
+
+        train_x["oof_preds"] = model_result.oof_preds
         tabnet_trainer = TabNetTrainer(config=cfg)
         tabnet_trainer.train_cross_validation(train_x, train_y)
         tabnet_trainer.save_model()
+
     else:
         raise NotImplementedError
 
